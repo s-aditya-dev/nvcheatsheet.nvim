@@ -215,15 +215,29 @@ function M.draw(buf, header, mappings_tb)
               - vim.fn.strdisplaywidth(columns[column_i][i])
           )
           -- highlight card heading & randomize hl groups for colorful colors
+          -- Create a dynamic highlight group with NvChSection text color and random background
+          local bg_highlight =
+            color_highlights[math.random(1, #color_highlights)]
+          local combined_highlight = "NvChSectionDynamic" .. bg_highlight
+          vim.cmd(
+            string.format(
+              "highlight link %s %s",
+              combined_highlight,
+              bg_highlight
+            )
+          )
+          vim.cmd(
+            string.format(
+              "highlight link %s guifg=NvChSection",
+              combined_highlight
+            )
+          )
+
           vim.api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
-            "NvChSection",
-            -- TODO: let the user choose the color
-            -- color_highlights[math.random(1, #color_highlights)],
-            i
-              + #ascii_header
-              - 1,
+            combined_highlight, -- Use the combined highlight group
+            i + #ascii_header - 1,
             vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start)
               - 1,
             vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start)
