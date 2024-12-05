@@ -1,16 +1,16 @@
 local M = {}
 
 local color_highlights = {
-  'NvCheatsheetWhite',
-  'NvCheatsheetGray',
-  'NvCheatsheetBlue',
-  'NvCheatsheetCyan',
-  'NvCheatsheetRed',
-  'NvCheatsheetGreen',
-  'NvCheatsheetYellow',
-  'NvCheatsheetOrange',
-  'NvCheatsheetPurple',
-  'NvCheatsheetMagenta',
+  "NvCheatsheetWhite",
+  "NvCheatsheetGray",
+  "NvCheatsheetBlue",
+  "NvCheatsheetCyan",
+  "NvCheatsheetRed",
+  "NvCheatsheetGreen",
+  "NvCheatsheetYellow",
+  "NvCheatsheetOrange",
+  "NvCheatsheetPurple",
+  "NvCheatsheetMagenta",
 }
 
 function M.draw(buf, header, mappings_tb)
@@ -18,7 +18,7 @@ function M.draw(buf, header, mappings_tb)
   --FIXME: Columns are not entirely centered
 
   -- Create namespace for the highlight groups
-  local nvcheatsheet = vim.api.nvim_create_namespace('nvcheatsheet')
+  local nvcheatsheet = vim.api.nvim_create_namespace("nvcheatsheet")
 
   -- Add left padding (strs) to ascii so it looks centered
   local ascii_header = vim.tbl_values(header)
@@ -26,7 +26,7 @@ function M.draw(buf, header, mappings_tb)
   local ascii_padding = (vim.api.nvim_win_get_width(win) / 2)
     - (#ascii_header[1] / 2)
   for i, str in ipairs(ascii_header) do
-    ascii_header[i] = string.rep(' ', ascii_padding) .. str
+    ascii_header[i] = string.rep(" ", ascii_padding) .. str
   end
 
   -- Draw header
@@ -63,10 +63,10 @@ function M.draw(buf, header, mappings_tb)
         math.floor((column_width - vim.fn.strdisplaywidth(name)) / 2)
 
       -- center the heading
-      name = string.rep(' ', padding_left)
+      name = string.rep(" ", padding_left)
         .. name
         .. string.rep(
-          ' ',
+          " ",
           column_width - vim.fn.strdisplaywidth(name) - padding_left
         )
 
@@ -76,19 +76,19 @@ function M.draw(buf, header, mappings_tb)
         cards[name] = {}
       end
 
-      table.insert(cards[name], string.rep(' ', column_width))
+      table.insert(cards[name], string.rep(" ", column_width))
 
       local whitespace_len = column_width
         - 4
         - vim.fn.strdisplaywidth(mapping[1] .. mapping[2])
       local pretty_mapping = mapping[1]
-        .. string.rep(' ', whitespace_len)
+        .. string.rep(" ", whitespace_len)
         .. mapping[2]
 
-      table.insert(cards[name], '  ' .. pretty_mapping .. '  ')
+      table.insert(cards[name], "  " .. pretty_mapping .. "  ")
     end
-    table.insert(cards[name], string.rep(' ', column_width))
-    table.insert(cards[name], string.rep(' ', column_width))
+    table.insert(cards[name], string.rep(" ", column_width))
+    table.insert(cards[name], string.rep(" ", column_width))
   end
 
   -- divide cheatsheet layout into columns
@@ -168,7 +168,7 @@ function M.draw(buf, header, mappings_tb)
   -- so all columns will have the same height
   for i, _ in ipairs(columns) do
     for _ = 1, max_col_height - #columns[i], 1 do
-      columns[i][#columns[i] + 1] = string.rep(' ', column_width)
+      columns[i][#columns[i] + 1] = string.rep(" ", column_width)
     end
   end
 
@@ -179,7 +179,7 @@ function M.draw(buf, header, mappings_tb)
     local line = value
 
     for col_index = 2, #columns, 1 do
-      line = line .. '  ' .. columns[col_index][index]
+      line = line .. "  " .. columns[col_index][index]
     end
 
     result[index] = line
@@ -206,7 +206,7 @@ function M.draw(buf, header, mappings_tb)
           vim.api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
-            'NvChSection',
+            "NvChSection",
             i + #ascii_header - 1,
             vim.fn.byteidx(lines[1], col_start),
             vim.fn.byteidx(lines[1], col_start)
@@ -218,9 +218,12 @@ function M.draw(buf, header, mappings_tb)
           vim.api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
+            "NvChSection",
             -- TODO: let the user choose the color
-            color_highlights[math.random(1, #color_highlights)],
-            i + #ascii_header - 1,
+            -- color_highlights[math.random(1, #color_highlights)],
+            i
+              + #ascii_header
+              - 1,
             vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start)
               - 1,
             vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start)
@@ -230,7 +233,7 @@ function M.draw(buf, header, mappings_tb)
           vim.api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
-            'NvChSection',
+            "NvChSection",
             i + #ascii_header,
             vim.fn.byteidx(lines[2], col_start),
             vim.fn.byteidx(lines[2], col_start) + column_width
@@ -238,7 +241,7 @@ function M.draw(buf, header, mappings_tb)
 
         -- highlight mappings & one line after it
         elseif
-          string.match(columns[column_i][i], '%s+') ~= columns[column_i][i]
+          string.match(columns[column_i][i], "%s+") ~= columns[column_i][i]
         then
           local lines = vim.api.nvim_buf_get_lines(
             buf,
@@ -249,7 +252,7 @@ function M.draw(buf, header, mappings_tb)
           vim.api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
-            'NvChSection',
+            "NvChSection",
             i + #ascii_header - 1,
             vim.fn.stridx(lines[1], columns[column_i][i], col_start),
             vim.fn.stridx(lines[1], columns[column_i][i], col_start)
@@ -258,7 +261,7 @@ function M.draw(buf, header, mappings_tb)
           vim.api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
-            'NvChSection',
+            "NvChSection",
             i + #ascii_header,
             vim.fn.byteidx(lines[2], col_start),
             vim.fn.byteidx(lines[2], col_start) + column_width
@@ -273,7 +276,7 @@ function M.draw(buf, header, mappings_tb)
     vim.api.nvim_buf_add_highlight(
       buf,
       nvcheatsheet,
-      'NvChAsciiHeader',
+      "NvChAsciiHeader",
       i,
       0,
       -1
